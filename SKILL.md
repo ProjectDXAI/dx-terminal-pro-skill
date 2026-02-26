@@ -31,13 +31,13 @@ The environment variable `DX_TERMINAL_PRIVATE_KEY` controls and identifies a tra
 
 ## Get Vault Address
 
-`VAULT_ADDRESS=$(curl -s "https://api.terminal.markets/api/v1/vault?ownerAddress=$(cast wallet address --private-key $DX_TERMINAL_PRIVATE_KEY)" | jq -r .vaultAddress)`
+`VAULT_ADDRESS=$(curl -s "http://localhost:8081/api/v1/vault?ownerAddress=$(cast wallet address --private-key $DX_TERMINAL_PRIVATE_KEY)" | jq -r .vaultAddress)`
 
 ## API Reads
 
 ### Get Vault Settings
 
-`curl -s "https://api.terminal.markets/api/v1/vault?vaultAddress=$VAULT_ADDRESS"`
+`curl -s "http://localhost:8081/api/v1/vault?vaultAddress=$VAULT_ADDRESS"`
 
 Vault settings include:
 
@@ -51,7 +51,7 @@ Vault settings include:
 
 ### Get Portfolio
 
-`curl -s "https://api.terminal.markets/api/v1/positions/$VAULT_ADDRESS"`
+`curl -s "http://localhost:8081/api/v1/positions/$VAULT_ADDRESS"`
 
 Returns ETH + token balances, and PNL data.
 
@@ -59,7 +59,7 @@ Note: `ethBalance`, `overallValueEth`, and `overallPnlEth`, and `positions[].bal
 
 ### Get Deposits and Withdrawals
 
-`curl -s "https://api.terminal.markets/api/v1/deposits-withdrawals/$VAULT_ADDRESS?limit=50&order=desc"`
+`curl -s "http://localhost:8081/api/v1/deposits-withdrawals/$VAULT_ADDRESS?limit=50&order=desc"`
 
 Note: `amount` is in wei units.
 
@@ -67,13 +67,13 @@ Note: supports cursor pagination via `cursor=...`.
 
 ### Get Tokens
 
-`curl -s "https://api.terminal.markets/api/v1/tokens?includeMarketData=true"`
+`curl -s "http://localhost:8081/api/v1/tokens?includeMarketData=true"`
 
 Returns market data for all tokens.
 
 ### Get Swaps
 
-`curl -s "https://api.terminal.markets/api/v1/swaps?vaultAddress=$VAULT_ADDRESS&limit=50&order=desc"`
+`curl -s "http://localhost:8081/api/v1/swaps?vaultAddress=$VAULT_ADDRESS&limit=50&order=desc"`
 
 Note: `ethAmount` and `tokenAmount` are in wei/pre-decimal units, and should be divided by 1e18 for presentation.
 
@@ -81,13 +81,13 @@ Note: This endpoint uses cursor pagination. Each swap contains a `cursor` to res
 
 ### Get Strategies
 
-`curl -s "https://api.terminal.markets/api/v1/strategies/$VAULT_ADDRESS?activeOnly=true"`
+`curl -s "http://localhost:8081/api/v1/strategies/$VAULT_ADDRESS?activeOnly=true"`
 
 Note: Strategies are instructions to direct the trading agent's behavior. There is a maximum of 8 total, each has a maximum length of 1024 characters, and they have priorities + an expiry time.
 
 ### Get Token OHLCV Candles
 
-`curl -s "https://api.terminal.markets/api/v1/candles/$TOKEN_ADDRESS?timeframe=1m&to=$(date +%s)&countback=300"`
+`curl -s "http://localhost:8081/api/v1/candles/$TOKEN_ADDRESS?timeframe=1m&to=$(date +%s)&countback=300"`
 
 Get token chart data.
 
@@ -95,7 +95,7 @@ Note: `timeframe` and `to` are required. Valid timeframes: `1m`, `5m`, `15m`, `1
 
 ### Get Inference Logs
 
-`curl -s "https://api.terminal.markets/api/v1/logs/$VAULT_ADDRESS?limit=50&order=desc"`
+`curl -s "http://localhost:8081/api/v1/logs/$VAULT_ADDRESS?limit=50&order=desc"`
 
 Gets the reasoning returned by the trading agent's inference.
 
@@ -103,7 +103,7 @@ Note: cursor pagination via `cursor=...`.
 
 ### Get Token Holders
 
-`curl -s "https://api.terminal.markets/api/v1/holders/$TOKEN_ADDRESS?limit=50&offset=0&order=desc"`
+`curl -s "http://localhost:8081/api/v1/holders/$TOKEN_ADDRESS?limit=50&offset=0&order=desc"`
 
 Note: `balance`, `totalBoughtTokens`, and `totalSoldTokens` are in wei/pre-decimal units, and should be divided by 1e18 for presentation.
 
@@ -111,21 +111,21 @@ Note: `order=desc` returns largest holders first.
 
 ### Get Leaderboard
 
-`curl -s "https://api.terminal.markets/api/v1/leaderboard?limit=50&sortBy=total_pnl_usd"`
+`curl -s "http://localhost:8081/api/v1/leaderboard?limit=50&sortBy=total_pnl_usd"`
 
 Note: optional `cursor=...` for pagination
 
 ### Get PnL History
 
-`curl -s "https://api.terminal.markets/api/v1/pnl-history/$VAULT_ADDRESS"`
+`curl -s "http://localhost:8081/api/v1/pnl-history/$VAULT_ADDRESS"`
 
 Note: returns time-series PnL datapoints for charting. `pnlEth` is in wei.
 
-### Onchain Actions
+## Onchain Actions
 
 ### Update vault settings
 
-`cast send "$VAULT_ADDRESS" "updateSettings((uint256,uint256,uint8,uint8,uint8,uint8,uint8))" "(5000,200,3,3,3,3,3)" --private-key "$DX_TERMINAL_PRIVATE_KEY" --rpc-url "https://mainnet.base.org"`
+`cast send "$VAULT_ADDRESS" "updateSettings((uint256,uint256,uint8,uint8,uint8,uint8,uint8))" "(5000,200,3,3,3,3,3)" --private-key "$DX_TERMINAL_PRIVATE_KEY" --rpc-url "http://127.0.0.1:8545"`
 
 Params in tuple order: `(maxTradeAmount, slippageBps, tradingActivity, assetRiskPreference, tradeSize, holdingStyle, diversification)`.
 
@@ -137,7 +137,7 @@ Validation: `maxTradeAmount` is BPS and must be `500-10000` (5%-100%), `slippage
 
 example:
 
-`cast send "$VAULT_ADDRESS" "addStrategy(string,uint64,uint8)" "Rotate into strongest relative volume while keeping 20% idle ETH for opportunities." "$(( $(date +%s) + 86400 ))" "2" --private-key "$DX_TERMINAL_PRIVATE_KEY" --rpc-url "https://mainnet.base.org"`
+`cast send "$VAULT_ADDRESS" "addStrategy(string,uint64,uint8)" "Rotate into strongest relative volume while keeping 20% idle ETH for opportunities." "$(( $(date +%s) + 86400 ))" "2" --private-key "$DX_TERMINAL_PRIVATE_KEY" --rpc-url "http://127.0.0.1:8545"`
 
 Params: `strategy` (string), `expiry` (unix seconds), `prio` (`0=Low`, `1=Med`, `2=High`).
 
@@ -145,16 +145,16 @@ Validation: strategy length is `1-1024` bytes, `expiry` must be `0` or a future 
 
 #### Disable Strategy
 
-`cast send "$VAULT_ADDRESS" "disableStrategy(uint256)" "1" --private-key "$DX_TERMINAL_PRIVATE_KEY" --rpc-url "https://mainnet.base.org"`
+`cast send "$VAULT_ADDRESS" "disableStrategy(uint256)" "1" --private-key "$DX_TERMINAL_PRIVATE_KEY" --rpc-url "http://127.0.0.1:8545"`
 
 Param: `strategyId` (uint256).
 
 ### Deposit
 
-`cast send "$VAULT_ADDRESS" "depositETH()" --value 0.05ether --private-key "$DX_TERMINAL_PRIVATE_KEY" --rpc-url "https://mainnet.base.org"`
+`cast send "$VAULT_ADDRESS" "depositETH()" --value 0.05ether --private-key "$DX_TERMINAL_PRIVATE_KEY" --rpc-url "http://127.0.0.1:8545"`
 
 ### Withdraw
 
-`cast send "$VAULT_ADDRESS" "withdrawETH(uint256)" "50000000000000000" --private-key "$DX_TERMINAL_PRIVATE_KEY" --rpc-url "https://mainnet.base.org"`
+`cast send "$VAULT_ADDRESS" "withdrawETH(uint256)" "50000000000000000" --private-key "$DX_TERMINAL_PRIVATE_KEY" --rpc-url "http://127.0.0.1:8545"`
 
 Param: `amount_` in wei.
