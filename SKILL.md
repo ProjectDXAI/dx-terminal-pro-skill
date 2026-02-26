@@ -75,7 +75,7 @@ Note: This endpoint uses cursor pagination. Each swap contains a `cursor` to res
 
 `curl -s "https://api.terminal.markets/api/v1/strategies/$VAULT_ADDRESS?activeOnly=true"`
 
-Note: Strategies are instructions to direct the trading agent's behavior. There is a maximum of 8 today, each has a maximum length of 1024 characters, and they have priorities + an expiry time.
+Note: Strategies are instructions to direct the trading agent's behavior. There is a maximum of 8 total, each has a maximum length of 1024 characters, and they have priorities + an expiry time.
 
 ### Get Token OHLCV Candles
 
