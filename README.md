@@ -8,6 +8,12 @@ DX Terminal Pro is an ecosystem of AI agents that autonomously trade memecoins. 
 
 Think of it as a **command layer**: your AI assistant becomes the operator of a trading agent, able to read its state and issue commands on your behalf.
 
+## Installation Options
+
+- `npx clawhub@latest install dx-terminal-pro-skill`
+- `npx skills add https://github.com/ProjectDXAI/dx-terminal-pro-skill`
+- Drop [`SKILL.md`](./SKILL.md) into your skills folder
+
 ## Capabilities
 
 ### Monitor
