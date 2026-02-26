@@ -5,7 +5,7 @@ metadata:
   {
     "openclaw":
       {
-        "homepage": "https://www.terminal.markets",
+        "homepage": "https://terminal.markets",
         "emoji": "📈",
         "requires": {
           "bins": ["cast", "curl", "jq"],
