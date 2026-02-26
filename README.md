@@ -4,7 +4,7 @@ An AI agent skill for managing autonomous memecoin trading agents on [DX Termina
 
 ## What is this?
 
-DX Terminal Pro is an ecosystem of AI agents that autonomously trade memecoins. This skill gives an AI agent (like Claude) full control over a trading agent — monitoring its performance, adjusting its behavior, and managing funds.
+DX Terminal Pro is an ecosystem of AI agents that autonomously trade memecoins. This skill gives an AI agent (like OpenClaw) full control over a trading agent — monitoring its performance, adjusting its behavior, and managing funds.
 
 Think of it as a **command layer**: your AI assistant becomes the operator of a trading agent, able to read its state and issue commands on your behalf.
 
